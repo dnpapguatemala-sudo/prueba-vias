@@ -6,6 +6,10 @@
 <meta name="theme-color" content="#0B7A84">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Vías clínicas">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Vías clínicas · borrador</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -563,6 +567,14 @@ html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 98px)}
 .dmq{text-align:center;margin:8px 6px 0;font:700 13px/1.3 var(--display);color:var(--ink-2)}
 .dmq::before{content:"▼ ";color:var(--sc)}
 
+/* Teléfono de lado: pedir que se gire a vertical */
+#rotateHint{display:none}
+@media (orientation:landscape) and (max-height:540px) and (pointer:coarse){
+  #rotateHint{position:fixed;top:0;right:0;bottom:0;left:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;background:var(--hero);color:#fff;font:700 24px/1.25 var(--display)}
+  #rotateHint svg{width:84px;height:84px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  #rotateHint small{display:block;font:400 16px/1.4 var(--body);color:var(--hero-dim);margin-top:6px}
+}
+
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 
 
@@ -1089,6 +1101,7 @@ html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 140px)}
   </div>
 </nav>
 
+<div id="rotateHint" role="alert"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="20" y="6" width="24" height="44" rx="5"/><path d="M29 44h6"/><path d="M8 42a26 26 0 0048 6M56 48l-2-9-8 5"/></svg><div>Gira el teléfono a vertical<small>Esta aplicación está pensada para usarse en vertical.</small></div></div>
 <div class="sheet-bg" id="sheetBg" hidden></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetT" hidden>
   <div class="sheet-grip" aria-hidden="true"></div>
@@ -2517,6 +2530,16 @@ const sync=()=>{const on=!pn.hidden;tnn.toggleAttribute('aria-current',on);if(on
 new MutationObserver(sync).observe(pn,{attributes:true,attributeFilter:['hidden']});sync();
 tnn.addEventListener('click',e=>{if(!pn.hidden){e.stopPropagation();window.scrollTo(0,0);}},true);
 })();
+</script>
+<script>
+if('serviceWorker' in navigator&&location.protocol==='https:'){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
+}
+try{
+  if(screen.orientation&&screen.orientation.lock&&window.matchMedia('(display-mode: standalone)').matches){
+    screen.orientation.lock('portrait').catch(function(){});
+  }
+}catch(e){}
 </script>
 </body>
 </html>
